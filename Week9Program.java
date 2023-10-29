@@ -30,6 +30,8 @@ public class Week9Program extends Application {
 		Color dFill = Color.BLACK;
 		Color stroke = null;
 		Color fill = null;
+		Double GlobalX = null;
+		Double GlobalY = null;
 	
 		Scene scene = null;
 		int j = 0;
@@ -114,11 +116,28 @@ public class Week9Program extends Application {
 					Double x2 = Double.parseDouble( commands.get( i ) );
 					i++;
 					Double y2 = Double.parseDouble( commands.get( i ) );
+					GlobalX = x2;
+					GlobalY = y2;
 					Line line = new Line( x1, y1, x2, y2 );
 					line.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );
 					pane.getChildren( ).add( line ); 
 				} catch ( NumberFormatException e ) {
 					System.out.println( "There's an error with a LINE command" );
+				}
+			}
+
+			if ( commands.get( i ).equals( "LINETO" ) ) {
+				
+				try {
+					i++;
+					Double x1 = Double.parseDouble( commands.get( i ) );
+					i++;
+					Double y1 = Double.parseDouble( commands.get( i ) );
+					Line line = new Line( GlobalX, GlobalY, x1, y1 );
+					line.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );
+					pane.getChildren( ).add( line );
+				} catch ( NumberFormatException e ) {
+					System.out.println( "There's an error in a LINETO command" );
 				}
 			}
 
@@ -131,6 +150,8 @@ public class Week9Program extends Application {
 					Double y = Double.parseDouble( commands.get( i ) );
 					i++;
 					Double r = Double.parseDouble( commands.get( i ) );
+					GlobalX = x;
+					GlobalY = y;
 					Circle circle = new Circle( x, y, r );
 					circle.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );
 					pane.getChildren( ).add( circle );
@@ -151,6 +172,8 @@ public class Week9Program extends Application {
 					Double w = Double.parseDouble( commands.get( i ) );
 					i++;
 					Double h = Double.parseDouble( commands.get( i ) );
+					GlobalX = x;
+					GlobalY = y;
 					Rectangle rectangle = new Rectangle( x, y, w, h );
 					rectangle.setFill( Objects.isNull( fill ) ? dFill: fill );
 					rectangle.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );
@@ -177,6 +200,8 @@ public class Week9Program extends Application {
 					i++;
 					Double l = Double.parseDouble( commands.get( i ) );
 					i++;
+					GlobalX = rx;
+					GlobalY = ry;
 					Arc arc = new Arc( cx, cy, rx, ry, sa, l );
 					if ( commands.get( i ).equals( "OPEN" ) ) {
 						arc.setType( ArcType.OPEN );
@@ -211,10 +236,13 @@ public class Week9Program extends Application {
 						!commands.get( i ).equals( "END" ) &&
 						!commands.get( i ).equals( "ARC" ) &&
 						!commands.get( i ).equals( "POLYGON" ) &&
+						!commands.get( i ).equals( "LINETO" ) &&
 						!( ( i - 1 ) == commands.size( ) ) ) {
 							polyList.add( Double.parseDouble( commands.get( i ) ) );
 							i++;
 						}
+					GlobalX = polyList.get( polyList.size( ) - 2 );
+					GlobalY = polyList.get( polyList.size( ) - 1 );
 					polygon.setFill( Objects.isNull( fill ) ? dFill: fill );
 					polygon.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );
 					polygon.getPoints().addAll( polyList );
@@ -245,6 +273,7 @@ public class Week9Program extends Application {
 						!commands.get( i ).equals( "END" ) &&
 						!commands.get( i ).equals( "ARC" ) &&
 						!commands.get( i ).equals( "POLYGON" ) &&
+						!commands.get( i ).equals( "LINETO" ) &&
 						!( ( i - 1 ) == commands.size( ) ) ) {
 			
 						sb.append( commands.get( i ) );
@@ -252,7 +281,8 @@ public class Week9Program extends Application {
 						i++;
 					
 					}
-
+					GlobalX = x;
+					GlobalY = y;
 					String str = sb.toString( );
 					Text text = new Text( x, y, str );
 					text.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );

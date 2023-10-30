@@ -17,25 +17,56 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import java.util.Objects;
 
+/**
+ * Reads a file of commands and outputs an image.
+ * @author Steven Garrett
+ * Class: CS1131, Lab: L02
+ * @version 1.4
+ */
+
 public class Week9Program extends Application {
 	
+	/**
+	 * Star method, required by Application
+	 * @param args
+	 * @throws NumberFormatException if a command does not have all necessary information
+	 * @throws IllegalArugmentException if COLOR command is not a valid color
+	 */
+
 	@Override
 	public void start( Stage stage ) {
 		
 		Week9Program a = new Week9Program( );
 		ArrayList< String > commands = a.read( getParameters( ).getRaw( ).get( 0 ) );
 		Pane pane = new Pane( );
+
+		/** Default color of background */
 		Color dBackground = Color.BLACK;
+
+		/** Default stroke color */
 		Color dStroke = Color.rgb( 127, 244, 16 );
+
+		/** Default fill color */
 		Color dFill = Color.BLACK;
+
+		/** Stroke color if STROKE command is used */
 		Color stroke = null;
+
+		/** Fill color is FILL command is used */
 		Color fill = null;
+
+		/** Last used X coordinate */
 		Double GlobalX = null;
+
+		/** Last used Y coordinate */
 		Double GlobalY = null;
 	
 		Scene scene = null;
+
+		/** Counter for all commands */
 		int j = 0;
 
+		/** Checks if there is an END command */
 		for ( int i = 0; i < commands.size( ); i++ ) {
 			
 			if ( !commands.get( i ).equals( "END" ) ) {
@@ -51,12 +82,13 @@ public class Week9Program extends Application {
 			System.exit( 0 );
 		}
 		
+		
 		for ( int i = 0; i < commands.size( ); i++ ) {
-
+			
 			if ( commands.get( i ).equals( "SIZE" ) ) {
 				
 				try {
-					i++;	
+					i++;
 					Double w = Double.parseDouble( commands.get( i ) );
 					i++;
 					Double h = Double.parseDouble( commands.get( i ) );
@@ -136,6 +168,8 @@ public class Week9Program extends Application {
 					Line line = new Line( GlobalX, GlobalY, x1, y1 );
 					line.setStroke( Objects.isNull( stroke ) ? dStroke: stroke );
 					pane.getChildren( ).add( line );
+					GlobalX = x1;
+					GlobalY = y1;
 				} catch ( NumberFormatException e ) {
 					System.out.println( "There's an error in a LINETO command" );
 				}
@@ -188,16 +222,22 @@ public class Week9Program extends Application {
 
 				try {
 					i++;
+					/** Center x */
 					Double cx = Double.parseDouble( commands.get( i ) );
 					i++;
+					/** Center y */
 					Double cy = Double.parseDouble( commands.get( i ) );
 					i++;
+					/** Radius x */
 					Double rx = Double.parseDouble( commands.get( i ) );
 					i++;
+					/** Radius y */
 					Double ry = Double.parseDouble( commands.get( i ) );
 					i++;
+					/** Start Angle */
 					Double sa = Double.parseDouble( commands.get( i ) );
 					i++;
+					/** Length */
 					Double l = Double.parseDouble( commands.get( i ) );
 					i++;
 					GlobalX = rx;
@@ -237,6 +277,9 @@ public class Week9Program extends Application {
 						!commands.get( i ).equals( "ARC" ) &&
 						!commands.get( i ).equals( "POLYGON" ) &&
 						!commands.get( i ).equals( "LINETO" ) &&
+						!commands.get( i ).equals( "FILL" ) &&
+						!commands.get( i ).equals( "STROKE" ) &&
+						!commands.get( i ).equals( "//" ) &&
 						!( ( i - 1 ) == commands.size( ) ) ) {
 							polyList.add( Double.parseDouble( commands.get( i ) ) );
 							i++;
@@ -274,6 +317,9 @@ public class Week9Program extends Application {
 						!commands.get( i ).equals( "ARC" ) &&
 						!commands.get( i ).equals( "POLYGON" ) &&
 						!commands.get( i ).equals( "LINETO" ) &&
+						!commands.get( i ).equals( "FILL" ) &&
+						!commands.get( i ).equals( "STROKE" ) &&
+						!commands.get( i ).equals( "//" ) &&
 						!( ( i - 1 ) == commands.size( ) ) ) {
 			
 						sb.append( commands.get( i ) );
@@ -305,6 +351,11 @@ public class Week9Program extends Application {
 		stage.show( );
 	}
 
+	/** Takes imputted file and passes it into an ArrayList
+	 * @param args
+	 * @return ArrayList with each command
+	 * @throws FileNotFoundException if file can't be found
+	 */
 
 	public ArrayList<String> read ( String file ) {
 
